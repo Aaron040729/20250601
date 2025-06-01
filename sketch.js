@@ -37,17 +37,17 @@ function draw() {
   pop();
 
   // 畫出分類區
-  fill(200, 100, 100, 150);
-  rect(0, 0, width / 2, height); // 左側分類區 (A)
   fill(100, 100, 200, 150);
-  rect(width / 2, 0, width / 2, height); // 右側分類區 (B)
+  rect(0, 0, width / 2, height); // 左側分類區 (B)
+  fill(200, 100, 100, 150);
+  rect(width / 2, 0, width / 2, height); // 右側分類區 (A)
 
   // 顯示分類標籤
   fill(0);
   textSize(20);
   textAlign(CENTER, CENTER);
-  text("鳥類與昆蟲", width / 4, 20); // 左側標籤
-  text("哺乳類", (3 * width) / 4, 20); // 右側標籤
+  text("哺乳類", width / 4, 20); // 左側標籤
+  text("鳥類與昆蟲", (3 * width) / 4, 20); // 右側標籤
 
   // 顯示當前生物或結束訊息
   if (remainingAnimals.length === 0) {
@@ -145,30 +145,30 @@ function getNextAnimal() {
 
 function getAnimalList() {
   return [
-    { name: "老鷹", category: "B" }, // A: 鳥類
-    { name: "老虎", category: "A" }, // B: 哺乳類
-    { name: "蝴蝶", category: "B" }, // A: 昆蟲
-    { name: "海豚", category: "A" }, // B: 哺乳類
-    { name: "麻雀", category: "B" }, // A: 鳥類
-    { name: "企鵝", category: "B" }, // A: 鳥類
-    { name: "獅子", category: "A" }, // B: 哺乳類
-    { name: "蜜蜂", category: "B" }, // A: 昆蟲
-    { name: "蝙蝠", category: "A" }, // B: 哺乳類
-    { name: "孔雀", category: "B" }, // A: 鳥類
-    { name: "袋鼠", category: "A" }, // B: 哺乳類
-    { name: "螞蟻", category: "B" }, // A: 昆蟲
-    { name: "鯨魚", category: "A" }, // B: 哺乳類
-    { name: "鴿子", category: "B" }, // A: 鳥類
-    { name: "狐狸", category: "A" }, // B: 哺乳類
-    { name: "蜻蜓", category: "B" }, // A: 昆蟲
-    { name: "熊貓", category: "A" }, // B: 哺乳類
-    { name: "鷹", category: "B" }, // A: 鳥類
-    { name: "狼", category: "A" }, // B: 哺乳類
-    { name: "螢火蟲", category: "B" }, // A: 昆蟲
-    { name: "斑馬", category: "A" }, // B: 哺乳類
-    { name: "鸚鵡", category: "B" }, // A: 鳥類
-    { name: "蝗蟲", category: "B" }, // A: 昆蟲
-    { name: "黑熊", category: "A" }, // B: 哺乳類
-    { name: "鴨子", category: "B" }, // A: 鳥類
+    { name: "老鷹", category: "A" }, // A: 鳥類
+    { name: "老虎", category: "B" }, // B: 哺乳類
+    { name: "蝴蝶", category: "A" }, // A: 昆蟲
+    { name: "海豚", category: "B" }, // B: 哺乳類
+    { name: "麻雀", category: "A" }, // A: 鳥類
+    { name: "企鵝", category: "A" }, // A: 鳥類
+    { name: "獅子", category: "B" }, // B: 哺乳類
+    { name: "蜜蜂", category: "A" }, // A: 昆蟲
+    { name: "蝙蝠", category: "B" }, // B: 哺乳類
+    { name: "孔雀", category: "A" }, // A: 鳥類
+    { name: "袋鼠", category: "B" }, // B: 哺乳類
+    { name: "螞蟻", category: "A" }, // A: 昆蟲
+    { name: "鯨魚", category: "B" }, // B: 哺乳類
+    { name: "鴿子", category: "A" }, // A: 鳥類
+    { name: "狐狸", category: "B" }, // B: 哺乳類
+    { name: "蜻蜓", category: "A" }, // A: 昆蟲
+    { name: "熊貓", category: "B" }, // B: 哺乳類
+    { name: "鷹", category: "A" }, // A: 鳥類
+    { name: "狼", category: "B" }, // B: 哺乳類
+    { name: "螢火蟲", category: "A" }, // A: 昆蟲
+    { name: "斑馬", category: "B" }, // B: 哺乳類
+    { name: "鸚鵡", category: "A" }, // A: 鳥類
+    { name: "蝗蟲", category: "A" }, // A: 昆蟲
+    { name: "黑熊", category: "B" }, // B: 哺乳類
+    { name: "鴨子", category: "A" }, // A: 鳥類
   ];
 }
