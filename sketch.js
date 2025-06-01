@@ -1,9 +1,13 @@
 let video;
-let currentQuestion;
-let answer = null;
-let handRaised = false;
 let handX = 0;
 let handY = 0;
+let leftHandX = 0;
+let leftHandY = 0;
+let rightHandX = 0;
+let rightHandY = 0;
+let currentAnimal;
+let categories = ["Bird", "Mammal", "Insect"];
+let score = 0;
 
 function setup() {
   createCanvas(640, 480);
@@ -11,36 +15,38 @@ function setup() {
   video.size(640, 480);
   video.hide();
 
-  currentQuestion = getNextQuestion();
+  currentAnimal = getNextAnimal();
 }
 
 function draw() {
   background(220);
   image(video, 0, 0);
 
+  // 畫出分類區
+  fill(200, 100, 100, 150);
+  rect(0, 0, width / 2, height); // 左側分類區 (A)
+  fill(100, 100, 200, 150);
+  rect(width / 2, 0, width / 2, height); // 右側分類區 (B)
+
+  // 顯示當前生物
   fill(0);
   textSize(24);
-  text(`Question: ${currentQuestion.question}`, 10, 30);
+  textAlign(CENTER, CENTER);
+  text(`Animal: ${currentAnimal.name}`, width / 2, 30);
+  text(`Score: ${score}`, width / 2, 60);
 
-  if (answer !== null) {
-    text(`Your Answer: ${answer}`, 10, 60);
-    if (checkAnswer(currentQuestion, answer)) {
-      text('Correct!', 10, 90);
-      currentQuestion = getNextQuestion();
-      answer = null;
-    } else {
-      text('Try Again!', 10, 90);
-    }
-  }
-
+  // 偵測手勢
   detectHandGesture();
+
+  // 畫出手的位置
   drawHandPosition();
+
+  // 判斷是否將生物掃入分類區
+  checkClassification();
 }
 
 function detectHandGesture() {
-  // 使用影像來偵測手的位置
   video.loadPixels();
-  let handDetected = false;
   let totalX = 0;
   let totalY = 0;
   let count = 0;
@@ -57,44 +63,60 @@ function detectHandGesture() {
         totalX += x;
         totalY += y;
         count++;
-        handDetected = true;
       }
     }
   }
 
-  if (handDetected && count > 0) {
+  if (count > 0) {
     handX = totalX / count;
     handY = totalY / count;
 
-    // 偵測手是否舉起（手在畫布上半部）
-    if (handY < height / 2) {
-      if (!handRaised) {
-        handRaised = true;
-        answer = floor(map(handX, 0, width, 1, 5)); // 將 X 座標映射到 1 到 5
-      }
+    // 假設左右手分別在畫布的左半部和右半部
+    if (handX < width / 2) {
+      leftHandX = handX;
+      leftHandY = handY;
     } else {
-      handRaised = false;
+      rightHandX = handX;
+      rightHandY = handY;
     }
   }
 }
 
 function drawHandPosition() {
-  // 畫出手的位置
+  // 畫出左手的位置
   fill(255, 0, 0);
-  ellipse(handX, handY, 20, 20); // 畫出手的位置
+  ellipse(leftHandX, leftHandY, 20, 20);
+
+  // 畫出右手的位置
+  fill(0, 0, 255);
+  ellipse(rightHandX, rightHandY, 20, 20);
 }
 
-function checkAnswer(question, playerAnswer) {
-  return question.answer === playerAnswer;
+function checkClassification() {
+  // 如果左手掃入左側分類區
+  if (leftHandY < height && leftHandX < width / 2) {
+    if (currentAnimal.category === "A") {
+      score++;
+      currentAnimal = getNextAnimal();
+    }
+  }
+
+  // 如果右手掃入右側分類區
+  if (rightHandY < height && rightHandX > width / 2) {
+    if (currentAnimal.category === "B") {
+      score++;
+      currentAnimal = getNextAnimal();
+    }
+  }
 }
 
-function getNextQuestion() {
-  const num1 = floor(random(1, 6));
-  const num2 = floor(random(1, 6));
-  const isAddition = random() > 0.5;
-
-  return {
-    question: isAddition ? `${num1} + ${num2}` : `${num1} - ${num2}`,
-    answer: isAddition ? num1 + num2 : num1 - num2,
-  };
+function getNextAnimal() {
+  const animals = [
+    { name: "Eagle", category: "A" }, // A: Bird
+    { name: "Tiger", category: "B" }, // B: Mammal
+    { name: "Butterfly", category: "A" }, // A: Insect
+    { name: "Dolphin", category: "B" }, // B: Mammal
+    { name: "Sparrow", category: "A" }, // A: Bird
+  ];
+  return random(animals);
 }
