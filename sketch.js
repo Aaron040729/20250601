@@ -77,15 +77,15 @@ function detectHandGesture() {
     totalRightY = 0,
     rightCount = 0;
 
-  for (let y = 0; y < video.height; y++) {
+  for (let y = video.height / 2; y < video.height; y++) { // 只偵測畫布下半部
     for (let x = 0; x < video.width; x++) {
       let index = (x + y * video.width) * 4;
       let r = video.pixels[index];
       let g = video.pixels[index + 1];
       let b = video.pixels[index + 2];
 
-      // 偵測膚色範圍 (避免偵測到臉部)
-      if (r > 150 && g > 100 && g < 180 && b < 100) {
+      // 更精確的膚色範圍
+      if (r > 150 && r < 200 && g > 100 && g < 170 && b > 50 && b < 120) {
         if (x < width / 2) {
           // 左手
           totalLeftX += x;
@@ -101,7 +101,9 @@ function detectHandGesture() {
     }
   }
 
-  if (leftCount > 0) {
+  // 過濾過大的區域（可能是臉部）
+  const maxHandSize = 500; // 假設手部像素數量不超過 500
+  if (leftCount > 0 && leftCount < maxHandSize) {
     leftHandX = totalLeftX / leftCount;
     leftHandY = totalLeftY / leftCount;
   } else {
@@ -109,7 +111,7 @@ function detectHandGesture() {
     leftHandY = -1;
   }
 
-  if (rightCount > 0) {
+  if (rightCount > 0 && rightCount < maxHandSize) {
     rightHandX = totalRightX / rightCount;
     rightHandY = totalRightY / rightCount;
   } else {
