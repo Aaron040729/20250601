@@ -38,19 +38,43 @@ function draw() {
 }
 
 function detectHandGesture() {
-  // 偵測手勢的邏輯
-  // 假設玩家的手在畫面中央，並根據手的高度來模擬手勢數字
-  handX = mouseX; // 模擬手的位置（用滑鼠代替）
-  handY = mouseY;
+  // 使用影像來偵測手的位置
+  video.loadPixels();
+  let handDetected = false;
+  let totalX = 0;
+  let totalY = 0;
+  let count = 0;
 
-  // 偵測手是否舉起（手在畫布上半部）
-  if (handY < height / 2) {
-    if (!handRaised) {
-      handRaised = true;
-      answer = floor(map(handX, 0, width, 0, 10)); // 根據 X 座標模擬手勢數字
+  for (let y = 0; y < video.height; y++) {
+    for (let x = 0; x < video.width; x++) {
+      let index = (x + y * video.width) * 4;
+      let r = video.pixels[index];
+      let g = video.pixels[index + 1];
+      let b = video.pixels[index + 2];
+
+      // 偵測膚色範圍 (簡單的 RGB 範圍判斷)
+      if (r > 150 && g > 100 && g < 180 && b < 100) {
+        totalX += x;
+        totalY += y;
+        count++;
+        handDetected = true;
+      }
     }
-  } else {
-    handRaised = false;
+  }
+
+  if (handDetected && count > 0) {
+    handX = totalX / count;
+    handY = totalY / count;
+
+    // 偵測手是否舉起（手在畫布上半部）
+    if (handY < height / 2) {
+      if (!handRaised) {
+        handRaised = true;
+        answer = floor(map(handX, 0, width, 1, 5)); // 將 X 座標映射到 1 到 5
+      }
+    } else {
+      handRaised = false;
+    }
   }
 }
 
