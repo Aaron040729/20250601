@@ -145,30 +145,30 @@ function getNextAnimal() {
 
 function getAnimalList() {
   return [
-    { name: "老鷹", category: "A" }, // A: 鳥類
-    { name: "老虎", category: "B" }, // B: 哺乳類
-    { name: "蝴蝶", category: "A" }, // A: 昆蟲
-    { name: "海豚", category: "B" }, // B: 哺乳類
-    { name: "麻雀", category: "A" }, // A: 鳥類
-    { name: "企鵝", category: "A" }, // A: 鳥類
-    { name: "獅子", category: "B" }, // B: 哺乳類
-    { name: "蜜蜂", category: "A" }, // A: 昆蟲
-    { name: "蝙蝠", category: "B" }, // B: 哺乳類
-    { name: "孔雀", category: "A" }, // A: 鳥類
-    { name: "袋鼠", category: "B" }, // B: 哺乳類
-    { name: "螞蟻", category: "A" }, // A: 昆蟲
-    { name: "鯨魚", category: "B" }, // B: 哺乳類
-    { name: "鴿子", category: "A" }, // A: 鳥類
-    { name: "狐狸", category: "B" }, // B: 哺乳類
-    { name: "蜻蜓", category: "A" }, // A: 昆蟲
-    { name: "熊貓", category: "B" }, // B: 哺乳類
-    { name: "鷹", category: "A" }, // A: 鳥類
-    { name: "狼", category: "B" }, // B: 哺乳類
-    { name: "螢火蟲", category: "A" }, // A: 昆蟲
-    { name: "斑馬", category: "B" }, // B: 哺乳類
-    { name: "鸚鵡", category: "A" }, // A: 鳥類
-    { name: "蝗蟲", category: "A" }, // A: 昆蟲
-    { name: "黑熊", category: "B" }, // B: 哺乳類
-    { name: "鴨子", category: "A" }, // A: 鳥類
+    { name: "老鷹", category: "B" }, // A: 鳥類
+    { name: "老虎", category: "A" }, // B: 哺乳類
+    { name: "蝴蝶", category: "B" }, // A: 昆蟲
+    { name: "海豚", category: "A" }, // B: 哺乳類
+    { name: "麻雀", category: "B" }, // A: 鳥類
+    { name: "企鵝", category: "B" }, // A: 鳥類
+    { name: "獅子", category: "A" }, // B: 哺乳類
+    { name: "蜜蜂", category: "B" }, // A: 昆蟲
+    { name: "蝙蝠", category: "A" }, // B: 哺乳類
+    { name: "孔雀", category: "B" }, // A: 鳥類
+    { name: "袋鼠", category: "A" }, // B: 哺乳類
+    { name: "螞蟻", category: "B" }, // A: 昆蟲
+    { name: "鯨魚", category: "A" }, // B: 哺乳類
+    { name: "鴿子", category: "B" }, // A: 鳥類
+    { name: "狐狸", category: "A" }, // B: 哺乳類
+    { name: "蜻蜓", category: "B" }, // A: 昆蟲
+    { name: "熊貓", category: "A" }, // B: 哺乳類
+    { name: "鷹", category: "B" }, // A: 鳥類
+    { name: "狼", category: "A" }, // B: 哺乳類
+    { name: "螢火蟲", category: "B" }, // A: 昆蟲
+    { name: "斑馬", category: "A" }, // B: 哺乳類
+    { name: "鸚鵡", category: "B" }, // A: 鳥類
+    { name: "蝗蟲", category: "B" }, // A: 昆蟲
+    { name: "黑熊", category: "A" }, // B: 哺乳類
+    { name: "鴨子", category: "B" }, // A: 鳥類
   ];
 }
