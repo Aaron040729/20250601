@@ -6,6 +6,7 @@ let score = 0;
 let resultMessage = "";
 let showNextQuestionTime = 0;
 let remainingAnimals = [];
+let isWaiting = false; // 狀態鎖，防止多次觸發下一題
 
 function setup() {
   createCanvas(640, 480);
@@ -100,6 +101,8 @@ function detectHandGesture() {
 }
 
 function checkClassification(category) {
+  if (isWaiting) return; // 如果正在等待，直接返回
+
   let correct = false;
 
   if (category === "A" && currentAnimal.category === "A") {
@@ -116,12 +119,14 @@ function checkClassification(category) {
   }
 
   if (resultMessage) {
+    isWaiting = true; // 啟動狀態鎖
     showNextQuestionTime = millis() + 5000; // 5 秒後顯示下一題
     setTimeout(() => {
       if (remainingAnimals.length > 0) {
         currentAnimal = getNextAnimal();
       }
       resultMessage = "";
+      isWaiting = false; // 解鎖狀態鎖
     }, 5000);
   }
 }
