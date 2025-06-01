@@ -69,6 +69,8 @@ function draw() {
 }
 
 function detectHandGesture() {
+  if (isWaiting) return; // 如果正在等待，直接返回，避免多次觸發
+
   model.detect(video.elt).then((predictions) => {
     let leftHandDetected = false;
     let rightHandDetected = false;
