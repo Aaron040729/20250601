@@ -1,5 +1,4 @@
 let video;
-let poseNet;
 let currentQuestion;
 let answer = null;
 let handRaised = false;
@@ -9,9 +8,6 @@ function setup() {
   video = createCapture(VIDEO);
   video.size(640, 480);
   video.hide();
-
-  poseNet = ml5.poseNet(video, modelReady);
-  poseNet.on('pose', gotPoses);
 
   currentQuestion = getNextQuestion();
 }
@@ -34,48 +30,28 @@ function draw() {
       text('Try Again!', 10, 90);
     }
   }
+
+  detectHandGesture();
 }
 
-function modelReady() {
-  console.log('PoseNet Model Loaded');
-}
+function detectHandGesture() {
+  // 偵測手勢的邏輯（簡化版）
+  // 假設玩家的手在畫面中央，並根據手的高度來模擬手勢數字
+  let handX = mouseX; // 模擬手的位置（用滑鼠代替）
+  let handY = mouseY;
 
-function gotPoses(poses) {
-  if (poses.length > 0) {
-    const pose = poses[0].pose;
+  fill(255, 0, 0);
+  ellipse(handX, handY, 20, 20); // 畫出手的位置
 
-    // Detect raised hand (e.g., right wrist higher than right elbow)
-    const rightWrist = pose.rightWrist;
-    const rightElbow = pose.rightElbow;
-
-    if (rightWrist.y < rightElbow.y) {
-      if (!handRaised) {
-        handRaised = true;
-        answer = detectHandNumber(pose);
-      }
-    } else {
-      handRaised = false;
+  // 偵測手是否舉起（手在畫布上半部）
+  if (handY < height / 2) {
+    if (!handRaised) {
+      handRaised = true;
+      answer = floor(map(handX, 0, width, 0, 10)); // 根據 X 座標模擬手勢數字
     }
+  } else {
+    handRaised = false;
   }
-}
-
-function detectHandNumber(pose) {
-  // Simplified logic: Use the y-coordinates of fingers to determine the number
-  const landmarks = [
-    pose.rightWrist,
-    pose.rightIndex,
-    pose.rightMiddle,
-    pose.rightRing,
-    pose.rightPinky,
-  ];
-
-  let count = 0;
-  for (let i = 1; i < landmarks.length; i++) {
-    if (landmarks[i].y < landmarks[0].y) {
-      count++;
-    }
-  }
-  return count; // Return the number of raised fingers
 }
 
 function checkAnswer(question, playerAnswer) {
