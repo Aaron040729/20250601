@@ -2,6 +2,8 @@ let video;
 let currentQuestion;
 let answer = null;
 let handRaised = false;
+let handX = 0;
+let handY = 0;
 
 function setup() {
   createCanvas(640, 480);
@@ -32,16 +34,14 @@ function draw() {
   }
 
   detectHandGesture();
+  drawHandPosition();
 }
 
 function detectHandGesture() {
-  // 偵測手勢的邏輯（簡化版）
+  // 偵測手勢的邏輯
   // 假設玩家的手在畫面中央，並根據手的高度來模擬手勢數字
-  let handX = mouseX; // 模擬手的位置（用滑鼠代替）
-  let handY = mouseY;
-
-  fill(255, 0, 0);
-  ellipse(handX, handY, 20, 20); // 畫出手的位置
+  handX = mouseX; // 模擬手的位置（用滑鼠代替）
+  handY = mouseY;
 
   // 偵測手是否舉起（手在畫布上半部）
   if (handY < height / 2) {
@@ -52,6 +52,12 @@ function detectHandGesture() {
   } else {
     handRaised = false;
   }
+}
+
+function drawHandPosition() {
+  // 畫出手的位置
+  fill(255, 0, 0);
+  ellipse(handX, handY, 20, 20); // 畫出手的位置
 }
 
 function checkAnswer(question, playerAnswer) {
