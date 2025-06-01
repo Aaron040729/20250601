@@ -1,8 +1,6 @@
 let video;
-let leftHandX = 0,
-  leftHandY = 0;
-let rightHandX = 0,
-  rightHandY = 0;
+let model;
+let isModelLoaded = false;
 let currentAnimal;
 let score = 0;
 let resultMessage = "";
@@ -18,6 +16,13 @@ function setup() {
   // 初始化動物清單
   remainingAnimals = getAnimalList();
   currentAnimal = getNextAnimal();
+
+  // 載入 Handtrack.js 模型
+  handTrack.load().then((loadedModel) => {
+    model = loadedModel;
+    isModelLoaded = true;
+    console.log("Handtrack.js 模型已載入");
+  });
 }
 
 function draw() {
@@ -57,107 +62,56 @@ function draw() {
   }
 
   // 偵測手勢
-  detectHandGesture();
-
-  // 畫出手的位置
-  drawHandPosition();
-
-  // 判斷是否將生物掃入分類區
-  if (millis() > showNextQuestionTime) {
-    checkClassification();
+  if (isModelLoaded) {
+    detectHandGesture();
   }
 }
 
 function detectHandGesture() {
-  video.loadPixels();
-  let totalLeftX = 0,
-    totalLeftY = 0,
-    leftCount = 0;
-  let totalRightX = 0,
-    totalRightY = 0,
-    rightCount = 0;
+  model.detect(video.elt).then((predictions) => {
+    let leftHandDetected = false;
+    let rightHandDetected = false;
 
-  for (let y = video.height / 2; y < video.height; y++) { // 只偵測畫布下半部
-    for (let x = 0; x < video.width; x++) {
-      let index = (x + y * video.width) * 4;
-      let r = video.pixels[index];
-      let g = video.pixels[index + 1];
-      let b = video.pixels[index + 2];
+    predictions.forEach((prediction) => {
+      if (prediction.label === "open") {
+        const centerX = prediction.bbox[0] + prediction.bbox[2] / 2;
+        const centerY = prediction.bbox[1] + prediction.bbox[3] / 2;
 
-      // 更精確的膚色範圍
-      if (r > 150 && r < 200 && g > 100 && g < 170 && b > 50 && b < 120) {
-        if (x < width / 2) {
+        if (centerX < width / 2) {
           // 左手
-          totalLeftX += x;
-          totalLeftY += y;
-          leftCount++;
+          leftHandDetected = true;
+          fill(255, 0, 0);
+          ellipse(centerX, centerY, 20, 20);
         } else {
           // 右手
-          totalRightX += x;
-          totalRightY += y;
-          rightCount++;
+          rightHandDetected = true;
+          fill(0, 0, 255);
+          ellipse(centerX, centerY, 20, 20);
         }
       }
+    });
+
+    if (leftHandDetected) {
+      checkClassification("A");
+    } else if (rightHandDetected) {
+      checkClassification("B");
     }
-  }
-
-  // 過濾過大的區域（可能是臉部）
-  const maxHandSize = 500; // 假設手部像素數量不超過 500
-  if (leftCount > 0 && leftCount < maxHandSize) {
-    leftHandX = totalLeftX / leftCount;
-    leftHandY = totalLeftY / leftCount;
-  } else {
-    leftHandX = -1; // 表示未偵測到左手
-    leftHandY = -1;
-  }
-
-  if (rightCount > 0 && rightCount < maxHandSize) {
-    rightHandX = totalRightX / rightCount;
-    rightHandY = totalRightY / rightCount;
-  } else {
-    rightHandX = -1; // 表示未偵測到右手
-    rightHandY = -1;
-  }
+  });
 }
 
-function drawHandPosition() {
-  // 畫出左手的位置
-  if (leftHandX >= 0 && leftHandY >= 0) {
-    fill(255, 0, 0);
-    ellipse(leftHandX, leftHandY, 20, 20);
-  }
-
-  // 畫出右手的位置
-  if (rightHandX >= 0 && rightHandY >= 0) {
-    fill(0, 0, 255);
-    ellipse(rightHandX, rightHandY, 20, 20);
-  }
-}
-
-function checkClassification() {
+function checkClassification(category) {
   let correct = false;
 
-  // 如果左手掃入左側分類區
-  if (leftHandY >= 0 && leftHandY < height && leftHandX >= 0 && leftHandX < width / 2) {
-    if (currentAnimal.category === "A") {
-      correct = true;
-    }
-  }
-
-  // 如果右手掃入右側分類區
-  if (rightHandY >= 0 && rightHandY < height && rightHandX >= width / 2 && rightHandX < width) {
-    if (currentAnimal.category === "B") {
-      correct = true;
-    }
+  if (category === "A" && currentAnimal.category === "A") {
+    correct = true;
+  } else if (category === "B" && currentAnimal.category === "B") {
+    correct = true;
   }
 
   if (correct) {
     score++;
     resultMessage = "正確!";
-  } else if (
-    (leftHandX >= 0 && leftHandX < width / 2) ||
-    (rightHandX >= width / 2 && rightHandX < width)
-  ) {
+  } else {
     resultMessage = "錯誤!";
   }
 
