@@ -7,6 +7,7 @@ let currentAnimal;
 let score = 0;
 let resultMessage = "";
 let showNextQuestionTime = 0;
+let remainingAnimals = [];
 
 function setup() {
   createCanvas(640, 480);
@@ -14,6 +15,8 @@ function setup() {
   video.size(640, 480);
   video.hide();
 
+  // 初始化動物清單
+  remainingAnimals = getAnimalList();
   currentAnimal = getNextAnimal();
 }
 
@@ -33,6 +36,14 @@ function draw() {
   textAlign(CENTER, CENTER);
   text("鳥類與昆蟲", width / 4, 20); // 左側標籤
   text("哺乳類", (3 * width) / 4, 20); // 右側標籤
+
+  // 顯示當前生物或結束訊息
+  if (remainingAnimals.length === 0) {
+    textSize(32);
+    text("恭喜玩家全部答對！", width / 2, height / 2);
+    noLoop(); // 停止遊戲
+    return;
+  }
 
   // 顯示當前生物
   textSize(24);
@@ -93,36 +104,46 @@ function detectHandGesture() {
   if (leftCount > 0) {
     leftHandX = totalLeftX / leftCount;
     leftHandY = totalLeftY / leftCount;
+  } else {
+    leftHandX = -1; // 表示未偵測到左手
+    leftHandY = -1;
   }
 
   if (rightCount > 0) {
     rightHandX = totalRightX / rightCount;
     rightHandY = totalRightY / rightCount;
+  } else {
+    rightHandX = -1; // 表示未偵測到右手
+    rightHandY = -1;
   }
 }
 
 function drawHandPosition() {
   // 畫出左手的位置
-  fill(255, 0, 0);
-  ellipse(leftHandX, leftHandY, 20, 20);
+  if (leftHandX >= 0 && leftHandY >= 0) {
+    fill(255, 0, 0);
+    ellipse(leftHandX, leftHandY, 20, 20);
+  }
 
   // 畫出右手的位置
-  fill(0, 0, 255);
-  ellipse(rightHandX, rightHandY, 20, 20);
+  if (rightHandX >= 0 && rightHandY >= 0) {
+    fill(0, 0, 255);
+    ellipse(rightHandX, rightHandY, 20, 20);
+  }
 }
 
 function checkClassification() {
   let correct = false;
 
   // 如果左手掃入左側分類區
-  if (leftHandY < height && leftHandX < width / 2) {
+  if (leftHandY >= 0 && leftHandY < height && leftHandX >= 0 && leftHandX < width / 2) {
     if (currentAnimal.category === "A") {
       correct = true;
     }
   }
 
   // 如果右手掃入右側分類區
-  if (rightHandY < height && rightHandX > width / 2) {
+  if (rightHandY >= 0 && rightHandY < height && rightHandX >= width / 2 && rightHandX < width) {
     if (currentAnimal.category === "B") {
       correct = true;
     }
@@ -131,26 +152,54 @@ function checkClassification() {
   if (correct) {
     score++;
     resultMessage = "正確!";
-  } else if (leftHandX < width / 2 || rightHandX > width / 2) {
+  } else if (
+    (leftHandX >= 0 && leftHandX < width / 2) ||
+    (rightHandX >= width / 2 && rightHandX < width)
+  ) {
     resultMessage = "錯誤!";
   }
 
   if (resultMessage) {
     showNextQuestionTime = millis() + 5000; // 5 秒後顯示下一題
     setTimeout(() => {
-      currentAnimal = getNextAnimal();
+      if (remainingAnimals.length > 0) {
+        currentAnimal = getNextAnimal();
+      }
       resultMessage = "";
     }, 5000);
   }
 }
 
 function getNextAnimal() {
-  const animals = [
+  return remainingAnimals.splice(floor(random(remainingAnimals.length)), 1)[0];
+}
+
+function getAnimalList() {
+  return [
     { name: "老鷹", category: "A" }, // A: 鳥類
     { name: "老虎", category: "B" }, // B: 哺乳類
     { name: "蝴蝶", category: "A" }, // A: 昆蟲
     { name: "海豚", category: "B" }, // B: 哺乳類
     { name: "麻雀", category: "A" }, // A: 鳥類
+    { name: "企鵝", category: "A" }, // A: 鳥類
+    { name: "獅子", category: "B" }, // B: 哺乳類
+    { name: "蜜蜂", category: "A" }, // A: 昆蟲
+    { name: "蝙蝠", category: "B" }, // B: 哺乳類
+    { name: "孔雀", category: "A" }, // A: 鳥類
+    { name: "袋鼠", category: "B" }, // B: 哺乳類
+    { name: "螞蟻", category: "A" }, // A: 昆蟲
+    { name: "鯨魚", category: "B" }, // B: 哺乳類
+    { name: "鴿子", category: "A" }, // A: 鳥類
+    { name: "狐狸", category: "B" }, // B: 哺乳類
+    { name: "蜻蜓", category: "A" }, // A: 昆蟲
+    { name: "熊貓", category: "B" }, // B: 哺乳類
+    { name: "鷹", category: "A" }, // A: 鳥類
+    { name: "狼", category: "B" }, // B: 哺乳類
+    { name: "螢火蟲", category: "A" }, // A: 昆蟲
+    { name: "斑馬", category: "B" }, // B: 哺乳類
+    { name: "鸚鵡", category: "A" }, // A: 鳥類
+    { name: "蝗蟲", category: "A" }, // A: 昆蟲
+    { name: "黑熊", category: "B" }, // B: 哺乳類
+    { name: "鴨子", category: "A" }, // A: 鳥類
   ];
-  return random(animals);
 }
