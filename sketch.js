@@ -28,7 +28,13 @@ function setup() {
 
 function draw() {
   background(220);
-  image(video, 0, 0);
+
+  // 翻轉鏡頭影像
+  push();
+  translate(width, 0); // 將畫布的原點移到右上角
+  scale(-1, 1); // 水平翻轉影像
+  image(video, 0, 0); // 繪製翻轉後的影像
+  pop();
 
   // 畫出分類區
   fill(200, 100, 100, 150);
